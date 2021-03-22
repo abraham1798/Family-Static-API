@@ -26,17 +26,47 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/members', methods=['GET'])
-def handle_hello():
+def get_members():
 
-    # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
     response_body = {
-        "hello": "world",
+        
         "family": members
     }
 
-
     return jsonify(response_body), 200
+
+@app.route('/member/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+
+    member = jackson_family.get_member(member_id)
+    return jsonify(member), 200
+
+@app.route('/add_member', methods=['POST'])
+def adding_members():
+
+    # this is how you can use the Family datastructure by calling its methods
+    request_body = request.get_json()
+    result = jackson_family.add_member(request_body["first_name"], request_body["age"], request_body["lucky_numbers"])
+    return jsonify(result), 200
+
+@app.route('/del_member/<int:member_id>', methods=['DELETE'])
+def del_members(member_id):
+
+    # this is how you can use the Family datastructure by calling its methods
+    result = jackson_family.delete_member(member_id)
+    
+    return jsonify(result), 200
+
+@app.route('/upd_member/<int:member_id>', methods=['PUT'])
+def upd_members(member_id):
+
+    # this is how you can use the Family datastructure by calling its methods
+    request_body = request.get_json()
+    result = jackson_family.update_member(id = member_id, new_name = request_body["first_name"], new_age = request_body["age"], new_luckynum = request_body["lucky_numbers"])
+    
+    return jsonify(result), 200
+
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
